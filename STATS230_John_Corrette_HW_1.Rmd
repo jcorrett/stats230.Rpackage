@@ -1,0 +1,59 @@
+---
+title: "STATS230_John_Corrette_HW_1"
+author: "John Corrette"
+date: "1/12/2022"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(profvis)
+library(bench)
+library(ggplot2)
+```
+
+## Github
+
+The public Github repository for this R package can be found [here](https://github.com/jcorrett/stats230_R_package).
+
+## Test Function
+
+```{r test}
+source("mainProject/R/matrixvectormultiply.R")
+
+n <- 6
+Atest <- matrix(rnorm(n^2),nrow=n,ncol=n)
+Btest <- matrix(rnorm(n^2),nrow=n,ncol=n)
+xtest <- matrix(rnorm(n^2),nrow=n,ncol=1)
+prod1 <- matrixvectormultiply(Atest,Btest,xtest,TRUE)
+prod2 <- matrixvectormultiply(Atest,Btest,xtest,FALSE)
+error <- norm(prod1-prod2,type="I")
+error
+```
+
+## Microbenchmarking
+
+```{r benchmark code}
+nmax <- 40
+A <- matrix(rnorm(nmax^2),nrow=nmax,ncol=nmax)
+B <- matrix(rnorm(nmax^2),nrow=nmax,ncol=nmax)
+x <- matrix(rnorm(nmax^2),nrow=nmax,ncol=1)
+method1_median <- c()
+method2_median <- c()
+nvec <- 1:nmax
+for (n in nvec) {
+  lb <- mark(matrixvectormultiply(A[1:n,1:n],B[1:n,1:n],matrix(x[1:n]),TRUE),matrixvectormultiply(A[1:n,1:n],B[1:n,1:n],matrix(x[1:n]),FALSE))
+  method1_median[n] <- lb$median[1]
+  method2_median[n] <- lb$median[2]
+}
+
+df <- data.frame(nvec,method1_median,method2_median)
+```
+
+```{r benchmark time plot, echo = FALSE}
+cols = c("A*(B*x)"="red","(A*B)*x"="blue")
+bench_plot <- ggplot(data = df, aes(x=nvec)) + geom_line(aes(y = method1_median,color="A*(B*x)"), size=1) + geom_line(aes(y = method2_median,color="(A*B)*x"),size=1) + labs(x = "n",y = "Median Computation Time (s)",color = "Legend",title = "Multiplication Algorithm Computation Time")+ scale_color_manual(values = cols)+theme(plot.title = element_text(hjust = 0.5))
+bench_plot 
+```
