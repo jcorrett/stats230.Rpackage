@@ -13,7 +13,7 @@ matrixvectormultiply(A, B, x, switch_var)
 
 \item{x}{A column vector}
 
-\item{switch_var}{A boolean}
+\item{switch_var}{A boolean value to switch algorithms. TRUE computes (AB)x, whereas FALSE computes A(Bx).}
 }
 \description{
 Compute matrix-vector product ABx
