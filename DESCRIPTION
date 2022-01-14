@@ -1,5 +1,5 @@
 Package: stats230.Rpackage
-Title: What the Package Does (One Line, Title Case)
+Title: STATS230 R Functions
 Version: 0.0.0.9000
 Authors@R: 
     person("John", "Corrette", , "jcorrett@uci.edu", role = c("aut", "cre"),
