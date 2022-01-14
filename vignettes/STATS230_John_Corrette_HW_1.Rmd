@@ -1,27 +1,32 @@
 ---
 title: "STATS230 Homework #1"
 author: "John Corrette"
-date: "1/12/2022"
-output:
-  html_document:
-    df_print: paged
+date: "1/14/2022"
+output: html_document
 vignette: >
   %\VignetteIndexEntry{STATS230_John_Corrette_HW_1}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-library(profvis)
 library(bench)
 library(ggplot2)
-library(stats230.Rpackage)
+library(tidyr)
+is_available <- require(stats230.Rpackage)
+if (!is_available) {
+  library(devtools)
+  install_github("jcorrett/stats230.Rpackage")
+}
+library(stats230.Rpackage) 
 ```
 
 ## Github
 
 The public Github repository for this R package, jcorrett/stats230.Rpackage, can be found online [here](https://github.com/jcorrett/stats230.Rpackage).
+
+Knitting this Rmd file should automatically install the package.
 
 ## Test Function
 
@@ -46,9 +51,9 @@ We see above that our error is in fact on the order of the machine precision, so
 
 ## Microbenchmarking
 
-To microbenchmark this code, we will record the median computation time for a call with variable sized inputs, where $A,B \in \mathbb{R}^{n\times n}$, where $n \in [1,40]$, giving us 40 mean computation times for each way of computing $A\cdot B\cdot\boldsymbol{x}$. We can summarize the function performance with just the median computation time since each function call has only two matrix-matrix or matrix-vector multiplications, so the structure is simple enough to use one time measurement to summarize the whole function call. Then, using the bench package, we compute the median computation time as a function of $n$ for each algorithm as follows.
+To microbenchmark this code, we will record the median computation time for a call with variable sized inputs, where $A,B \in \mathbb{R}^{n\times n}$, where $n \in [1,30]$, giving us 30 mean computation times for each way of computing $A\cdot B\cdot\boldsymbol{x}$. We can summarize the function performance with just the median computation time since each function call has only two matrix-matrix or matrix-vector multiplications, so the structure is simple enough to use one time measurement to summarize the whole function call. Then, using the bench package, we compute the median computation time as a function of $n$ for each algorithm as follows.
 ```{r benchmark code}
-nmax <- 40
+nmax <- 30
 A <- matrix(rnorm(nmax^2),nrow=nmax,ncol=nmax)
 B <- matrix(rnorm(nmax^2),nrow=nmax,ncol=nmax)
 x <- matrix(rnorm(nmax^2),nrow=nmax,ncol=1)
@@ -56,7 +61,7 @@ method1_median <- c()
 method2_median <- c()
 nvec <- 1:nmax
 for (n in nvec) {
-  lb <- mark(matrixvectormultiply(A[1:n,1:n],B[1:n,1:n],matrix(x[1:n]),TRUE),matrixvectormultiply(A[1:n,1:n],B[1:n,1:n],matrix(x[1:n]),FALSE))
+  lb <- mark(matrixvectormultiply(A[1:n,1:n],B[1:n,1:n],matrix(x[1:n]),TRUE),matrixvectormultiply(A[1:n,1:n],B[1:n,1:n],matrix(x[1:n]),FALSE),min_time = Inf,max_iterations = 10000)
   method1_median[n] <- lb$median[1]
   method2_median[n] <- lb$median[2]
 }
@@ -68,8 +73,18 @@ Using the above data, we then summarize our results in the following plot:
 
 ```{r benchmark time plot, echo = FALSE}
 cols = c("A*(B*x)"="red","(A*B)*x"="blue")
-bench_plot <- ggplot(data = df, aes(x=nvec)) + geom_line(aes(y = method1_median,color="A*(B*x)"), size=1) + geom_line(aes(y = method2_median,color="(A*B)*x"),size=1) + labs(x = "n",y = "Median Computation Time (s)",color = "Legend",title = "Multiplication Algorithm Computation Time")+ scale_color_manual(values = cols)+theme(plot.title = element_text(hjust = 0.5))
+bench_plot <- ggplot(data = df, aes(x=nvec)) + geom_line(aes(y = method1_median,color="A*(B*x)"), size=1) + geom_line(aes(y = method2_median,color="(A*B)*x"),size=1) + labs(x = "n",y = "Median Computation Time (s)",color = "Legend",title = "Multiplication Algorithm Computation Time Summary")+ scale_color_manual(values = cols)+theme(plot.title = element_text(hjust = 0.5))
 bench_plot 
 ```
 
 From the above, we see that both algorithms compute our product on the order of microseconds, which is relatively quick. However, we see that the first algorithm, computing the product as $(A\cdot B)\cdot\boldsymbol{x}$, has a computation time that increases with $n$ much more rapidly than our other method. This can be attributed to multiplying two matrices scales $\sim O(n^3)$, but matrix-vector multiplication scales $\sim O(n^2)$. This difference leads to the significant difference in computation times, as expected.
+
+To analyze further, we summarize the function call for $n=30$ with the following plot.
+
+```{r benchmark summary plot, echo = FALSE}
+lb <- mark(matrixvectormultiply(A,B,x,TRUE),matrixvectormultiply(A,B,x,FALSE),min_time = Inf,max_iterations = 10000)
+bench_plot <- plot(lb) + labs(color = "Legend",title = "Multiplication Algorithm Computation Time for n = 30")+theme(plot.title = element_text(hjust = 0.5))+theme(legend.position = "none")
+bench_plot 
+```
+
+From this plot, we can see that the median is a good measure for this function, since the vast majority of the density of each distribution of computation times is near a constant value, with only a small handful of rare events exceeding the expected computation time. However, these rare events do not significantly violate the conclusion that the matrix-matrix multiplication algorithm is much slower than the matrix-vector algorithm due to its $n^3$ complexity.
