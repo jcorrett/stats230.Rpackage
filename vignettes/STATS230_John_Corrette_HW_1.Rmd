@@ -1,10 +1,14 @@
 ---
-title: "STATS230_John_Corrette_HW_1"
+title: "STATS230 Homework #1"
 author: "John Corrette"
 date: "1/12/2022"
 output:
   html_document:
     df_print: paged
+vignette: >
+  %\VignetteIndexEntry{STATS230_John_Corrette_HW_1}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include=FALSE}
@@ -18,8 +22,6 @@ library(stats230.Rpackage)
 ## Github
 
 The public Github repository for this R package, jcorrett/stats230.Rpackage, can be found online [here](https://github.com/jcorrett/stats230.Rpackage).
-
-The package data is stored under the folder named mainProject, to compile and install the library, load mainProject, and use the package devtools to build and install, and the package should be installed under the name stats230.Rpackage.
 
 ## Test Function
 
