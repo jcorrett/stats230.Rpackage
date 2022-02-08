@@ -9,6 +9,87 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
 ---
 
+## Problem 1
+
+Consider the matrix,
+$$A = \begin{bmatrix}a_{11} & \overline{a}^T\\ \overline{a} & A_{22}\end{bmatrix}=\begin{bmatrix}2 & -2\\-2 & 5\end{bmatrix}.$$
+The Cholesky factorization $L$ of $A$ such that $A = LL^T$ is defined such that
+$$A = \begin{bmatrix}a_{11} & \overline{a}^T\\ \overline{a} & A_{22}\end{bmatrix}=\begin{bmatrix}\ell_{11} & \overline{0}^T\\ \overline{\ell_1}^T & L_{22}\end{bmatrix}\cdot\begin{bmatrix}\ell_{11} & \overline{\ell_1}^T\\ \overline{0}^T & L_{22}\end{bmatrix}.$$
+From this, we have the algorithm for computing the Cholesky factorization, where we get
+$$\begin{align*}
+\ell_{11}^2 &= a_{11}\\
+\overline{a} &= \ell_{11}\overline{\ell_1}\\
+L_{22}\cdot L_{22}^T &= A_{22}-\overline{\ell_1}\cdot\overline{\ell_1}^T
+\end{align*}.$$
+Since $a_{11} = 2$, $\overline{a} = -2$, and $A_{22}$, we have the result that $\ell_{11} = \sqrt{2}$, $\overline{\ell_1} = -\sqrt{2}$, and $L_{22} = \sqrt{3}$. Therefore, the Cholesky factorization of A is
+$$L = \begin{bmatrix}\sqrt{2} & 0\\ -\sqrt{2} & \sqrt{3}\end{bmatrix}.$$
+
+## Problem 2
+
+## Problem 3
+
+Let $Q$ and $R$, the QR decomposition of $A$, be given such that $A = QR$, and $Q$ is an orthonormal matrix. Then, we can show that
+$$\begin{align*}
+X(X^TX)^{-1}X^T &= QR\left((QR)^TQR\right)^{-1}(QR)^T\\
+&= QR(R^TQ^TQR)^{-1}R^TQ^T.
+\end{align*}$$
+Then, since $Q^TQ = I$ due to $Q$ being orthonormal, we have our final result that
+$$\begin{align*}
+X(X^TX)^{-1}X^T &= QR(R^TQ^TQR)^{-1}R^TQ^T\\
+&= QR(R^TR)^{-1}R^TQ^T\\
+&= Q(RR^{-1})\left((R^T)^{-1}R^T\right)Q^T\\
+&= QQ^T.
+\end{align*}$$
+Therefore, it has been shown that $X(X^TX)^{-1}X^T = QQ^T$.
+
+Next, consider the properties of determinants that $\det(AB) = \det(A)\det(B)$ and that if $Q$ is orthonormal, then $1 = \det(I) = \det(Q^TQ) = \det(Q)^2$. We also use the property that $\det(A^T) = \det(A)$. We first will consider $|\det(X)|$. Using the QR decomposition, we know that $|\det(X)| = |\det(Q)\det(R)|$. Then, since $\det(Q)^2 = 1$, we know that $\det(Q) = \pm 1$, thus, it is true that $|\det(X)| = |\pm 1\cdot\det(R)| = |\det(R)|$. Therefore, $|\det(X)| = |\det(R)|$.
+Next, consider $\det(X^TX)$. Again, using the QR decomposition, we know that $X^TX = R^TQ^TQR = R^TR,$ thus, it must be true that $\det(X^TX) = \det(R^TR) = \det(R)^2.$
+
+## Problem 4
+
+A matrix $A$ is orthogonal if it's transpose is it's own inverse, i.e. if $A^TA = I$. Consider
+$$A = \begin{bmatrix}\cos\theta & \sin\theta\\ \sin\theta & -\cos\theta\end{bmatrix}.$$
+Since this matrix is symmetrical, we have the result that $A^T = A$. Then, we show that
+$$\begin{align*}
+A^TA &= \begin{bmatrix}\cos\theta & \sin\theta\\ \sin\theta & -\cos\theta\end{bmatrix}\cdot\begin{bmatrix}\cos\theta & \sin\theta\\ \sin\theta & -\cos\theta\end{bmatrix}\\
+&= \begin{bmatrix}\cos^2\theta+\sin^2\theta & \sin\theta\cos\theta-\sin\theta\cos\theta\\ \sin\theta\cos\theta-\sin\theta\cos\theta & \cos^2\theta+\sin^2\theta\end{bmatrix}\\
+&= \begin{bmatrix}1&0\\0&1\end{bmatrix}\\
+&= I.
+\end{align*}$$
+Thus, since $A^TA = I$, $A$ is an orthogonal matrix. Next, to find the eigenvalues of $A$, we must solve $\det(A-\lambda I) = 0$ for $\lambda$. For the given orthogonal matrix $A$, we must solve $\lambda^2 = 1$, which implies that $\lambda = \pm 1$ are the eigenvalues of $A$. To find the eigenvectors, let us first consider $\lambda = 1$. Then, for some eigenvector $\overline{v_1}$, we know that $A\overline{v} = \overline{v}$, which is true if and only if
+$$(1-\cos\theta)v_{11} = \sin\theta v_{12},$$
+where $v_{11}$ and $v_{12}$ are the first and second components of $\overline{v}_1$, respectively. Thus, since eigenvectors are unique up to a scalar multiple, we have the result that
+$$\overline{v}_1 = \begin{bmatrix}\cot\left(\frac{1}{2}\theta\right)\\1\end{bmatrix},$$
+for $\lambda_1 = 1$. For our final eigenvector, we know that eigenvectors must be orthogonal, thus we need to find a vector $\overline{v}_2$ such that $\overline{v}_1\cdot \overline{v}_2 = 0$. This is true if and only if
+$$\cot\left(\frac{1}{2}\theta\right)v_{21}+v_{22} = 0,$$
+where $v_{21}$ and $v_{22}$ are the first and second components of $\overline{v}_2$, respectively. Thus, we have our final result that
+$$\overline{v}_2 = \begin{bmatrix}1\\-\cot\left(\frac{1}{2}\theta\right)\end{bmatrix},$$
+for $\lambda_2 = -1$.
+
+## Problem 5
+
+Let $O$ and $\overline{v}$ be real valued. This means that $O\overline{v}$ must also be real valued. If $\overline{v}$ is an eigenvector of $O$ with eigenvalue $\lambda$, then $\lambda\overline{v}$ must also be real valued, which is then true if and only if $\lambda$ is real valued. Next, consider the Euclidean norm $||\cdot||_2$. We can show that
+$$||O\overline{v}||_2 = \sqrt{(O\overline{v})^TO\overline{v}} = \sqrt{\overline{v}^TO^TO\overline{v}} = \sqrt{\overline{v}^T\overline{v}} = ||\overline{v}||_2.$$
+Then, since $O\overline{v} = \lambda \overline{v}$ and $||O\overline{v}||_2 = ||\overline{v}||_2$, it must then be true that
+$$||\overline{v}_2||_2 = ||O\overline{v}||_2 = ||\lambda \overline{v}||_2 = |\lambda|\cdot||\overline{v}||_2.$$
+Since $\lambda$ must be real valued, the above statement is true if and only if $\lambda = \pm 1$. Therefore an orthogonal matrix $O$ must have eigenvalues $\lambda = \pm 1$.
+
+## Problem 6
+Let $A\in\mathbb{R}^{m\times m}$ be invertible matrix with singular values $\sigma_1,\ldots,\sigma_m$. Then, we have by singular value decomposition $A = U\Sigma V^T$, where
+$$\Sigma = \begin{bmatrix}\sigma_1&&0\\&\ddots&\\0&&\sigma_m\\\end{bmatrix}.$$
+We then know that if $A = U\Sigma V^T$ and $A$ is invertible, then $A^{-1} = V\Sigma^{-1}U^T$, where
+$$\Sigma^{-1} = \begin{bmatrix}\frac{1}{\sigma_1}&&0\\&\ddots&\\0&&\frac{1}{\sigma_m}\\\end{bmatrix}.$$
+However, if we let $\tilde{U} = V$, $\tilde{\Sigma} = \Sigma^{-1}$, and $\tilde{V} = U$, then we have $A^{-1} = \tilde{U}\tilde{\Sigma}\tilde{V}^T$, which is the SVD of $A^{-1}$ since $\tilde{U} = V$ and $\tilde{V} = U$ are orthogonal and $\tilde{\Sigma}$ is a diagonal matrix. Thus, it must be true that the singular values of $A^{-1}$ are $\frac{1}{\sigma_1},\ldots,\frac{1}{\sigma_m}$.
+
+Then, since $\underset{i}{\max}\frac{1}{\sigma_i} = \frac{1}{\underset{i}{\min}\sigma_i},$ and the matrix norm induced by the Euclidean norm of a matrix is equal to it's largest singular value, we have our final result that
+$$\text{cond}_2(A) = ||A||_2||A^{-1}||_2 = \underset{i}{\max}\sigma_i\underset{i}{\max}\frac{1}{\sigma_i} = \dfrac{\underset{i}{\max}\sigma_i}{\underset{i}{\min}\sigma_i}.$$
+
+## Problem 7
+
+To test our function, we will use the mean vector $\overline{\mu}$ and covariance matrix $\Sigma$ such that
+$$\overline{\mu} = \begin{bmatrix}1\\1\\1\\1\end{bmatrix},\qquad \Sigma = \begin{bmatrix}1&0.05&0.05&0.05\\0.05&1&0.05&0.05\\0.05&0.05&1&0.05\\0.05&0.05&0.05&1\end{bmatrix}.$$
+We chose these as test cases so we have a different mean value to test convergence about the mean, and non-zero covariance so the Cholesky factorization is no longer trivial, but not so large that we don't see signs of convergence in a small sample of $N = 100$. We test this function by computing the sample mean vector $\hat{\overline{\mu}}$ and sample covariance matrix $\hat{\Sigma}$ as follows: 
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(bench)
@@ -33,19 +114,69 @@ Sigma_hat <- cov(t(x))
 mu_hat
 Sigma_hat
 ```
+From the above, we can see that our sample mean and covariance vector/matrix are approximately close to the input values, loosely implying that our code is converging. However, the errors present are still quite large. To further verify, we repeat the above experiment but with $N = 10000$ to confirm convergence:
 
-```{r OLS}
+```{r MVN test large N}
+mu <- c(1,1,1,1)
+Sigma <- rbind(c(1,0.05,0.05,0.05),c(0.05,1,0.05,0.05),c(0.05,0.05,1,0.05),c(0.05,0.05,0.05,1))
+N <- 10000
+
+x <- rand_MVN(mu,Sigma,N)
+mu_hat <- rowMeans(x)
+Sigma_hat <- cov(t(x))
+mu_hat
+Sigma_hat
+```
+We see that the code is in fact converging as $N$ increases, and thus we conclude that our algorithm is correct.
+
+## Problem 8
+
+For the OLS problem, we can solve the normal equations by either using the QR decomposition or SVD of the data $X$. By doing so, we either solve
+$$\overline{\beta} = R^{-1}Q^T\overline{y},$$
+or
+$$\overline{\beta} = V\Sigma^{-1}U^Ty$$
+Both algorithms use clever tricks to solve the system, such as back substitution for the QR method or making use of $\Sigma$ being diagonal in the SVD method. We wish to then test the performance of both algorithms and compare. We do so by using microbenchmarking as follows:
+
+```{r OLS, warning=FALSE}
 data <- read.csv(file = 'C:/Users/Jack Corrette/Desktop/Statistical_Computing_Methods/homework2_regression.csv')
 data <- as.matrix(data)
 y <- data[,1]
-#X <- data[,-1]
-X <- cbind(data[,2],data[,6])
+X <- data[,-1]
 
 beta_QR <- OLS_QR(X,y)
-y_hat_QR <- X%*%beta_QR
 beta_SVD <- OLS_SVD(X,y)
+y_hat_QR <- X%*%beta_QR
 y_hat_SVD <- X%*%beta_SVD
-plot(X[,2],y)
-points(X[,2],y_hat_QR,col="blue")
-points(X[,2],y_hat_SVD,col="red")
+
+lb_QR <- mark(OLS_QR(X,y),max_iterations = 10000,min_time = Inf)
+lb_SVD <- mark(OLS_SVD(X,y),max_iterations = 10000,min_time = Inf)
+p1<-autoplot(lb_QR)+theme(legend.position = "none")+scale_y_continuous(limits=c(5e-5,2e-4))+ labs(color = "Legend",title = "OLS Benchmarking")+theme(plot.title = element_text(hjust = 0.5))
+p2<-autoplot(lb_SVD)+theme(legend.position = "none") +scale_y_continuous(limits=c(5e-5,2e-4))
+gridExtra::grid.arrange(p1,p2,nrow=2)
 ```
+From the above, we see that both algorithms are very fast, with median computation times less than $100\mu$s. However, we note that the QR has a slightly slower median computation time. Since the SVD algorithm has slightly more arithmetic calculations, this difference could be attributed to the time it takes R to compute the QR factorization using it's built in algorithm. We also see a wider distribution for QR, which may be another side effect of the QR algorithm.
+
+If we look at just the amount of time it takes to compute $\overline{\beta}$, not the time it takes to compute the decompositions, we see different results. We perform this test as follows:
+```{r OLS test, warning=FALSE}
+data <- read.csv(file = 'C:/Users/Jack Corrette/Desktop/Statistical_Computing_Methods/homework2_regression.csv')
+data <- as.matrix(data)
+y <- data[,1]
+X <- data[,-1]
+
+SVD <- svd(X)
+U <- SVD$u
+S <- diag(1/SVD$d)
+V <- SVD$v
+QR <- qr(X)
+Q <- qr.Q(QR)
+R <- qr.R(QR)
+
+lb_QR <- mark(backsolve(R,t(Q)%*%y),max_iterations = 10000,min_time = Inf)
+lb_SVD <- mark(V%*%S%*%t(U)%*%y,max_iterations = 10000,min_time = Inf)
+p1<-autoplot(lb_QR)+theme(legend.position = "none")+scale_y_continuous(limits=c(5e-6,4e-5))+ labs(color = "Legend",title = "OLS Benchmarking")+theme(plot.title = element_text(hjust = 0.5))
+p2<-autoplot(lb_SVD)+theme(legend.position = "none") +scale_y_continuous(limits=c(5e-6,4e-5))
+gridExtra::grid.arrange(p1,p2,nrow=2)
+```
+We now see that the SVD computation time is longer than the QR, thus confirming that the slow down is in computing the QR decomposition with R's algorithm.
+
+Therefore, we conclude that if the decomposition is not given, the SVD algorithm is preferable, however if the decomposition of $X$ is already available, the computation of $\overline{\beta}$ is slightly faster in the QR alogorithm.
