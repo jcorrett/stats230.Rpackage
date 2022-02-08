@@ -1,0 +1,32 @@
+---
+title: "STATS230 Homework #2"
+author: "John Corrette"
+date: "1/14/2022"
+output: html_document
+vignette: >
+  %\VignetteIndexEntry{STATS230_John_Corrette_HW_1}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(bench)
+library(ggplot2)
+library(tidyr)
+is_available <- require(stats230.Rpackage)
+if (!is_available) {
+  library(devtools)
+  install_github("jcorrett/stats230.Rpackage")
+}
+library(stats230.Rpackage) 
+```
+
+```{r MVN test}
+mu <- c(1,-2,3,-4)
+Sigma <- rbind(c(1,0.8,0,1),c(0.8,1.5,0.25,0),c(0,0.25,3,0.9),c(1,0,0.9,4.5))
+
+N <- 100
+
+x <- rand_MVN(mu,Sigma,N)
+```

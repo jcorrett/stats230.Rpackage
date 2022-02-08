@@ -6,8 +6,12 @@
 #'
 #' @export
 rand_MVN <- function(mu, Sigma, N) {
-  z <- rnorm(N, mean = 0, sd = 1)
-  L <- chol(Sigma)
-  sol <- mu + (L%*%z)
+  sol <- c()
+  for(i in 1:N) {
+    z <- rnorm(length(mu), mean = 0, sd = 1)
+    L <- chol(Sigma)
+    z <- mu + (L%*%z)
+    sol <- cbind(sol,z)
+  }
   return(sol)
 }
