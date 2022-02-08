@@ -8,6 +8,6 @@ OLS_QR <- function(X,y) {
   QR <- qr(X)
   Q <- qr.Q(QR)
   R <- qr.R(QR)
-  beta <- forwardsolve(R,t(Q)%*%y)
+  beta <- backsolve(R,t(Q)%*%y)
   return(beta)
 }

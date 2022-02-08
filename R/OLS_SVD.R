@@ -6,6 +6,6 @@
 #' @export
 OLS_SVD <- function(X,y) {
   SVD <- svd(X)
-  beta <- SVD$v%*%((t(SVD$u)%*%y)/SVD$d)
+  beta <- SVD$v%*%diag(1/SVD$d)%*%t(SVD$u)%*%y
   return(beta)
 }

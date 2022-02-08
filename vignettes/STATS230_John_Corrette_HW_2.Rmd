@@ -38,5 +38,14 @@ Sigma_hat
 data <- read.csv(file = 'C:/Users/Jack Corrette/Desktop/Statistical_Computing_Methods/homework2_regression.csv')
 data <- as.matrix(data)
 y <- data[,1]
-X <- data[,-1]
+#X <- data[,-1]
+X <- cbind(data[,2],data[,6])
+
+beta_QR <- OLS_QR(X,y)
+y_hat_QR <- X%*%beta_QR
+beta_SVD <- OLS_SVD(X,y)
+y_hat_SVD <- X%*%beta_SVD
+plot(X[,2],y)
+points(X[,2],y_hat_QR,col="blue")
+points(X[,2],y_hat_SVD,col="red")
 ```
