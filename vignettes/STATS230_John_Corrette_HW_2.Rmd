@@ -23,14 +23,20 @@ library(stats230.Rpackage)
 ```
 
 ```{r MVN test}
-mu <- c(-1,1,-2,2)
-Sigma <- rbind(c(1,0.5,0,0),c(0.5,1,0.5,0),c(0,0.5,1,0.5),c(0,0,0.5,1))
-
-N <- 100000
+mu <- c(1,1,1,1)
+Sigma <- rbind(c(1,0.05,0.05,0.05),c(0.05,1,0.05,0.05),c(0.05,0.05,1,0.05),c(0.05,0.05,0.05,1))
+N <- 100
 
 x <- rand_MVN(mu,Sigma,N)
-
 mu_hat <- rowMeans(x)
 Sigma_hat <- cov(t(x))
+mu_hat
 Sigma_hat
+```
+
+```{r OLS}
+data <- read.csv(file = 'C:/Users/Jack Corrette/Desktop/Statistical_Computing_Methods/homework2_regression.csv')
+data <- as.matrix(data)
+y <- data[,1]
+X <- data[,-1]
 ```
