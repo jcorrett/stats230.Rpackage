@@ -23,10 +23,14 @@ library(stats230.Rpackage)
 ```
 
 ```{r MVN test}
-mu <- c(1,-2,3,-4)
-Sigma <- rbind(c(1,0.8,0,1),c(0.8,1.5,0.25,0),c(0,0.25,3,0.9),c(1,0,0.9,4.5))
+mu <- c(-1,1,-2,2)
+Sigma <- rbind(c(1,0.5,0,0),c(0.5,1,0.5,0),c(0,0.5,1,0.5),c(0,0,0.5,1))
 
-N <- 100
+N <- 100000
 
 x <- rand_MVN(mu,Sigma,N)
+
+mu_hat <- rowMeans(x)
+Sigma_hat <- cov(t(x))
+Sigma_hat
 ```
