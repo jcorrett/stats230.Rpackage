@@ -1,7 +1,7 @@
 ---
 title: "STATS230 Homework #2"
 author: "John Corrette"
-date: "1/14/2022"
+date: "2/7/2022"
 output: html_document
 vignette: >
   %\VignetteIndexEntry{STATS230_John_Corrette_HW_1}
@@ -25,6 +25,29 @@ Since $a_{11} = 2$, $\overline{a} = -2$, and $A_{22}$, we have the result that $
 $$L = \begin{bmatrix}\sqrt{2} & 0\\ -\sqrt{2} & \sqrt{3}\end{bmatrix}.$$
 
 ## Problem 2
+Consider $A \in \mathbb{R}^{n\times n}$ such that $a_{ij} = 0$ when $|i-j|>d$ for some $d \in[0,1,\ldots,n]$. We will refer to this property as the "banding" of $A$. Then, assuming $A$ is symmetric positive definite, we define the Cholesky factorization of $A$ such that
+$$A = A^{(1)} = \begin{bmatrix}a_{11}^{(1)} & \overline{a^{(1)}}^T\\\overline{a^{(1)}} & A^{(1)}_{22} \end{bmatrix} = \begin{bmatrix}\ell_{11} & \overline{0}^T\\\overline{\ell_1} & L_{22} \end{bmatrix} \begin{bmatrix}\ell_{11} & \overline{\ell_1}^T\\\overline{0} & L^T_{22} \end{bmatrix} = LL^T.$$
+To prove that $L$ has the same banding as $A$, we will prove by induction that each column of $L$ preserves the banding via the algorithm for computing $L$.
+
+To start, with the base case, we will prove that the first column of $L$ satisfies the banding property and that $A^{(2)} = A_{22}^{(1)}-\overline{\ell_1}\overline{\ell_1}^T$ satisfies the same banding condition. Since $A = A^{(1)}$ satisfies the banding requirement in the first column, we know that
+$$\overline{a^{(1)}}^T = [a_{21}^{(1)},\ldots,a_{d+1,1}^{(1)},0,\ldots,0],$$
+such that the first $d$ terms of $\overline{a^{(1)}}^T$ can be nonzero, and the remaining $n-d-1$ entries are zero. Since $A$ is symmetric positive definite, we also know that $a_{11}^{(1)}$ is nonzero. Thus, we can compute via the Cholesky algorithm
+$$\overline{\ell_1}^T = \left[\dfrac{a_{21}^{(1)}}{\sqrt{a^{(1)}_{11}}},\ldots,\dfrac{a_{d+1,1}^{(1)}}{\sqrt{a^{(1)}_{11}}},0,\ldots,0\right].$$
+Thus, $\overline{\ell_1}$ has the same zero entries in the exact same places as $\overline{a^{(1)}}$, thus the first column of $L$ has the same banding as $A$. Then, since all the nonzero entries of $\overline{\ell_1}$ are in the first $d$ positions of the vector, we know that the matrix $\overline{\ell_1}\cdot\overline{\ell_1}^T$ has the banding condition with $d-1$, which is more strict than $A^{(1)}_{22}$, so this matrix also satisfies the same banding condition as $A$. Hence, the linear combination $A^{(2)} = A^{(1)}_{22}-\overline{\ell_1}\cdot\overline{\ell_1}^T$ has the same banding condition as $A$. Therefore, we have proven our base case.
+
+For the inductive step, let us assume the first $k-1$ columns of $L$ satisfy the banding property of $A$ and that $A^{(k)}$ satisfies the banding property that $a^{(k)}_{ij} = 0$ for $|i-j|>d$. We then will prove that the $k$th column of $L$ satisfies the banding property of $A$ and that $A^{(k+1)}$ satisfies the banding property that $a^{(k+1)}_{ij} = 0$ for $|i-j|>d$, for some $1< k \leq n-d$.
+
+For this Cholesky step, we are solving
+$$A^{(k)} = \begin{bmatrix}a_{11}^{(k)} & \overline{a^{(k)}}^T\\\overline{a^{(k)}} & A^{(k)}_{22} \end{bmatrix} = \begin{bmatrix}\ell_{kk} & \overline{0}^T\\\overline{\ell_k} & L_{k+1,k+1} \end{bmatrix} \begin{bmatrix}\ell_{kk} & \overline{\ell_k}^T\\\overline{0} & L^T_{k+1,k+1} \end{bmatrix} = L_{kk}L_{kk}^T$$
+Since $A^(k)$ satisfies the banding requirement in the first column, we know that
+$$\overline{a^{(k)}}^T = [a_{21}^{(k)},\ldots,a_{d+1,1}^{(k)},0,\ldots,0],$$
+such that the first $d$ terms of $\overline{a^{(k)}}^T$ can be nonzero, and the remaining $n-d-k$ are zero. Since $A$ is symmetric positive definite, we also know that $a_{11}^(1)$ is nonzero. Thus, we can compute via the Cholesky algorithm
+$$\overline{\ell_k}^T = \left[\dfrac{a_{21}^{(k)}}{\sqrt{a^{(k)}_{11}}},\ldots,\dfrac{a_{d+1,1}^{(k)}}{\sqrt{a^{(k)}_{11}}},0,\ldots,0\right].$$
+Thus, $\overline{\ell_k}$ has the same zero entries in the exact same places as $\overline{a^{(k)}}$, thus the $k$th column of $L$ has the same banding as $A$. Then, since all the nonzero entries of $\overline{\ell_k}$ are in the first $d$ positions of the vector, we know that the matrix $\overline{\ell_k}\cdot\overline{\ell_k}^T$ has the banding condition with $d-1$, which is more strict than $A^{(k)}_{22}$, so this matrix also satisfies the same banding condition as $A$. Hence, the linear combination $A^{(k)} = A^{(k)}_{22}-\overline{\ell_k}\cdot\overline{\ell_k}^T$ has the same banding condition as $A$. Therefore, we have proven our inductive step.
+
+For $k > n-d$, we will have smaller matrices $A^{(k)}$ than our banding requirement, meaning that these matrices can have all non-zero entries. This implies that the further columns of $L$ will trivially satisfy the banding property, since we are in the lower right region of the matrix.
+
+Therefore, by inductively proving that each column of the Cholesky decomposition satisfies the banding requirement until it satisfies it trivially, we have proven that if $A = LL^T$ with $a_{ij}=0$ for $|i-j|>d$, we have $\ell_{ij} = 0$ for $|i-j|>d$.
 
 ## Problem 3
 
@@ -68,10 +91,10 @@ for $\lambda_2 = -1$.
 
 ## Problem 5
 
-Let $O$ and $\overline{v}$ be real valued. This means that $O\overline{v}$ must also be real valued. If $\overline{v}$ is an eigenvector of $O$ with eigenvalue $\lambda$, then $\lambda\overline{v}$ must also be real valued, which is then true if and only if $\lambda$ is real valued. Next, consider the Euclidean norm $||\cdot||_2$. We can show that
+Let $O$ and $\overline{v}$ be real valued. This means that $O\overline{v}$ must also be real valued. If $\overline{v}$ is an eigenvector of $O$ with eigenvalue $\lambda$, then $O\overline{v}=\lambda\overline{v}$ must also be real valued, which is then true if and only if $\lambda$ is real valued. Next, consider the Euclidean norm $||\cdot||_2$. We can show that
 $$||O\overline{v}||_2 = \sqrt{(O\overline{v})^TO\overline{v}} = \sqrt{\overline{v}^TO^TO\overline{v}} = \sqrt{\overline{v}^T\overline{v}} = ||\overline{v}||_2.$$
 Then, since $O\overline{v} = \lambda \overline{v}$ and $||O\overline{v}||_2 = ||\overline{v}||_2$, it must then be true that
-$$||\overline{v}_2||_2 = ||O\overline{v}||_2 = ||\lambda \overline{v}||_2 = |\lambda|\cdot||\overline{v}||_2.$$
+$$||\overline{v}||_2 = ||O\overline{v}||_2 = ||\lambda \overline{v}||_2 = |\lambda|\cdot||\overline{v}||_2.$$
 Since $\lambda$ must be real valued, the above statement is true if and only if $\lambda = \pm 1$. Therefore an orthogonal matrix $O$ must have eigenvalues $\lambda = \pm 1$.
 
 ## Problem 6
@@ -179,4 +202,4 @@ gridExtra::grid.arrange(p1,p2,nrow=2)
 ```
 We now see that the SVD computation time is longer than the QR, thus confirming that the slow down is in computing the QR decomposition with R's algorithm.
 
-Therefore, we conclude that if the decomposition is not given, the SVD algorithm is preferable, however if the decomposition of $X$ is already available, the computation of $\overline{\beta}$ is slightly faster in the QR alogorithm.
+Therefore, we conclude that if the decomposition is not given, the SVD algorithm is preferable, however if the decomposition of $X$ is already available, the computation of $\overline{\beta}$ is slightly faster in the QR algorithm.
