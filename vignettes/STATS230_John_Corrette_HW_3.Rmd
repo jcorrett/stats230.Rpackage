@@ -29,8 +29,8 @@ data <- read.table("http://www-stat.stanford.edu/~tibs/ElemStatLearn/datasets/SA
 DF <- data.frame(data)
 X <- apply(as.matrix.noquote(DF),2,as.numeric)
 ystr <- "chd"
-xstr <- c("tobacco","ldl","adiposity","typea","obesity","alcohol","age")
-#xstr <- c("ldl","age")
+#xstr <- c("tobacco","ldl","adiposity","typea","obesity","alcohol","age")
+xstr <- c("ldl","age")
 y <- X[, ystr]
 X <- X[, xstr]
 X <- scale(X) #standardize to have 0 mean columns w/ var = 1
@@ -48,15 +48,12 @@ nr_llhood <- nr_df[[2]]
 nr_beta_CI <- nr_df[[3]]
 
 plot(gd_llhood)
-yhat_gd <- (1/(1+exp(-X%*%gd_beta)))
 
 plot(nr_llhood)
-yhat_nr <- (1/(1+exp(-X%*%nr_beta)))
 
 mylogit <- glm.fit(X,y,family=binomial(),intercept = FALSE)
 gd_beta
 gd_beta_CI
 nr_beta
 nr_beta_CI
-mylogit$coefficients
 ```
