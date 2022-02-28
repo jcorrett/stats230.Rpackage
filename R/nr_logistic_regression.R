@@ -8,16 +8,17 @@
 nr_logistic_regression <- function(X,y,tol) {
   llhood <- c()
   d <- dim(X)
-  beta <- as.matrix(rnorm(d[2]))
+  beta <- integer(d[2])
   p <- 1/(1+exp(-X%*%beta))
   err <- Inf #To ensure we enter the loop
   while(err > tol) {
     llhood <- c(llhood,t(y) %*% X %*% beta -sum(log(1+exp(X%*%beta))))
     gradllhood <- t(X)%*%(1/(1+exp(-X%*%beta)) - y)
     M <- t(X)%*%diag(as.vector(p*(1-p)))%*%X
+
     beta <- beta - solve(M,gradllhood)
     p <- 1/(1+exp(-X%*%beta))
-    err <- norm(- solve(M,gradllhood))
+    err <- norm(-solve(M,gradllhood))
   }
   p <- 1/(1+exp(-X%*%beta))
   W <- diag(as.vector(p*(1-p)))
