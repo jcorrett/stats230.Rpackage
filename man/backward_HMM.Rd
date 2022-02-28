@@ -4,18 +4,18 @@
 \alias{backward_HMM}
 \title{HMM backward algorithm}
 \usage{
-backward_HMM(P, E, V, y, s)
+backward_HMM(P, E, v, y, s)
 }
 \arguments{
 \item{P}{A transition prob matrix}
 
 \item{E}{An emission probability matrix}
 
+\item{v}{An initial state distribution}
+
 \item{y}{vector of observed states}
 
 \item{s}{dim of hidden state space}
-
-\item{v}{An initial state distribution}
 }
 \description{
 HMM backward algorithm
