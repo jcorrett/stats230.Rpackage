@@ -29,15 +29,20 @@ data <- read.table("http://www-stat.stanford.edu/~tibs/ElemStatLearn/datasets/SA
 DF <- data.frame(data)
 X <- apply(as.matrix.noquote(DF),2,as.numeric)
 ystr <- "chd"
-xstr <- c("ldl","age")
+xstr <- c("tobacco","ldl","adiposity","typea","obesity","alcohol","age")
 y <- X[, ystr]
 X <- X[, xstr]
 X <- scale(X) #standardize to have 0 mean columns w/ var = 1
 alpha <- 1e-3
 tol <- 1e-6
-temp <- gd_logistic_regression(X,y,alpha,tol)
-plot(temp[[3]])
-yhat <- (1/(1+exp(-X%*%temp[[1]])))
+gd_df <- gd_logistic_regression(X,y,alpha,tol)
+gd_beta <- gd_df[[1]]
+gd_llhood <- gd_df[[2]]
+gd_beta_CI <- gd_df[[3]]
+plot(gd_llhood)
+yhat_gd <- (1/(1+exp(-X%*%gd_beta)))
 
 mylogit <- glm.fit(X,y,family=binomial(),intercept = FALSE)
+gd_beta
+gd_beta_CI
 ```
