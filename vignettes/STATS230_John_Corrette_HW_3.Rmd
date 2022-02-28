@@ -29,13 +29,13 @@ data <- read.table("http://www-stat.stanford.edu/~tibs/ElemStatLearn/datasets/SA
 DF <- data.frame(data)
 X <- apply(as.matrix.noquote(DF),2,as.numeric)
 ystr <- "chd"
-#xstr <- c("tobacco","ldl","adiposity","typea","obesity","alcohol","age")
-xstr <- c("ldl","age")
+xstr <- c("sbp","tobacco","ldl","adiposity","typea","obesity","alcohol","age")
+#xstr <- c("ldl","age")
 y <- X[, ystr]
 X <- X[, xstr]
 X <- scale(X) #standardize to have 0 mean columns w/ var = 1
 alpha <- 1e-3
-tol <- 1e-6
+tol <- 1e-10
 
 gd_df <- gd_logistic_regression(X,y,alpha,tol)
 gd_beta <- gd_df[[1]]

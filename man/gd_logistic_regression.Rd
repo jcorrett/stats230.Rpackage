@@ -11,7 +11,9 @@ gd_logistic_regression(X, y, alpha, tol)
 
 \item{y}{A n by 1 column vector}
 
-\item{alpha}{A non-negative error tolerance}
+\item{alpha}{A positive integer learning rate}
+
+\item{tol}{A non-negative error tolerance}
 }
 \description{
 Solve logistic regression problem via gradient descent/ascent

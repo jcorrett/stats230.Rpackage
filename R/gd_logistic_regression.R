@@ -3,7 +3,7 @@
 #' @param X A n by d matrix
 #' @param y A n by 1 column vector
 #' @param alpha A positive integer learning rate
-#' @param alpha A non-negative error tolerance
+#' @param tol A non-negative error tolerance
 #'
 #' @export
 gd_logistic_regression <- function(X,y,alpha,tol) {

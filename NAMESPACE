@@ -2,6 +2,7 @@
 
 export(OLS_QR)
 export(OLS_SVD)
+export(em_blood)
 export(gd_logistic_regression)
 export(matrixvectormultiply)
 export(nr_logistic_regression)
