@@ -60,5 +60,5 @@ bw_HMM <- function(P,E,v,y,s,ymax,tol) {
   }
 
 
-  return(P,E,v)
+  return(list(P,E,v))
 }
