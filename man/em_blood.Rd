@@ -2,17 +2,17 @@
 % Please edit documentation in R/em_blood.R
 \name{em_blood}
 \alias{em_blood}
-\title{Solve logistic regression problem via gradient descent/ascent}
+\title{Use EM algorithm for ABO blood data}
 \usage{
-em_blood(n, p, tol)
+em_blood(n, p0, tol)
 }
 \arguments{
 \item{n}{A 4 by 1 vector of blood type counts. n = (nA,nB,nAB,nO)}
 
-\item{p}{A 3 by 1 vector of allele probabilities. p = (pA,pB,pO)}
-
 \item{tol}{A non-negative error tolerance}
+
+\item{p}{A 3 by 1 vector of allele probabilities. p = (pA,pB,pO)}
 }
 \description{
-Solve logistic regression problem via gradient descent/ascent
+Use EM algorithm for ABO blood data
 }

@@ -11,7 +11,7 @@ nr_logistic_regression(X, y, tol)
 
 \item{y}{A n by 1 column vector}
 
-\item{alpha}{A non-negative error tolerance}
+\item{tol}{A non-negative error tolerance}
 }
 \description{
 Solve logistic regression problem via Newton-Raphson algorithm
