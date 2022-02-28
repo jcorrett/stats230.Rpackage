@@ -11,12 +11,12 @@ gd_logistic_regression <- function(X,y,alpha,tol) {
   errors <- c()
   d <- dim(X)
   M <- diag(d[2])
-  beta <- 0*diag(M)
+  beta <- rnorm(10)
   err <- 1
   count <- 0
   while(err > tol && count < 100000) {
     llhood <- c(llhood,t(y) %*% X %*% beta -sum(log(1/(1+exp(X%*%beta)))))
-    gradllhood <- -t(X)%*%(y - 1/(1+exp(-X%*%beta)))
+    gradllhood <- t(X)%*%(1/(1+exp(-X%*%beta)) - y)
     beta <- beta - alpha*M%*%gradllhood
     err <- norm(- alpha*M%*%gradllhood)
     errors <- c(errors,err)
