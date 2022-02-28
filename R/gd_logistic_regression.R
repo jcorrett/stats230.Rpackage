@@ -8,6 +8,7 @@
 #' @export
 gd_logistic_regression <- function(X,y,alpha,tol) {
   llhood <- c()
+  errors <- c()
   d <- dim(X)
   M <- diag(d[2])
   beta <- 0*diag(M)
@@ -18,6 +19,7 @@ gd_logistic_regression <- function(X,y,alpha,tol) {
     gradllhood <- t(X)%*%(y - 1/(1+exp(-X%*%beta)))
     beta <- beta - alpha*M%*%gradllhood
     err <- norm(- alpha*M%*%gradllhood)
+    errors <- c(errors,err)
     count <- count + 1
   }
   return(list(beta,llhood))

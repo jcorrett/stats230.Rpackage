@@ -31,4 +31,7 @@ ystr <- "chd"
 y <- X[, colnames(X)==ystr]
 X <- X[, colnames(X)!=ystr]
 X <- X[, colnames(X)!="famhist"]
+alpha <- 1e-10
+tol <- 1e-6
+temp <- gd_logistic_regression(X,y,alpha,tol)
 ```
