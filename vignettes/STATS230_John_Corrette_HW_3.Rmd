@@ -14,6 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(bench)
 library(ggplot2)
 library(tidyr)
+library(matlib)
 is_available <- require(stats230.Rpackage)
 if (!is_available) {
   library(devtools)
@@ -32,7 +33,7 @@ xstr <- c("ldl","age")
 y <- X[, ystr]
 X <- X[, xstr]
 X <- scale(X) #standardize to have 0 mean columns w/ var = 1
-alpha <- 1e-4
+alpha <- 1e-3
 tol <- 1e-6
 temp <- gd_logistic_regression(X,y,alpha,tol)
 plot(temp[[3]])

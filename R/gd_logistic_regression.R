@@ -8,7 +8,6 @@
 #' @export
 gd_logistic_regression <- function(X,y,alpha,tol) {
   llhood <- c()
-  errors <- c()
   d <- dim(X)
   M <- diag(d[2])
   beta <- as.matrix(rnorm(d[2]))
@@ -18,7 +17,9 @@ gd_logistic_regression <- function(X,y,alpha,tol) {
     gradllhood <- t(X)%*%(1/(1+exp(-X%*%beta)) - y)
     beta <- beta - alpha*M%*%gradllhood
     err <- norm(- alpha*M%*%gradllhood)
-    errors <- c(errors,err)
   }
-  return(list(beta,llhood,errors))
+  p <- 1/(1+exp(-X%*%beta))
+  W <- diag(as.vector(p*(1-p)))
+  CI_bounds <- 1.960*sqrt(diag(inv(t(X)%*%W%*%X)))
+  return(list(beta,llhood,CI_bounds))
 }
