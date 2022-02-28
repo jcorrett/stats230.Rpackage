@@ -29,5 +29,5 @@ forward_HMM <- function(P,E,V,y,s) {
   for(j in 1:s){
     p <- p + a[j]
   }
-  return(p)
+  return(list(p,aarray))
 }
