@@ -21,6 +21,6 @@ nr_logistic_regression <- function(X,y,tol) {
   }
   p <- 1/(1+exp(-X%*%beta))
   W <- diag(as.vector(p*(1-p)))
-  CI_bounds <- 1.960*sqrt(diag(inv(t(X)%*%W%*%X)))
+  CI_bounds <- 1.960*sqrt(diag(ginv(t(X)%*%W%*%X)))
   return(list(beta,llhood,CI_bounds))
 }
