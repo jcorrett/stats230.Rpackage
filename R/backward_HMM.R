@@ -8,9 +8,11 @@
 #'
 #' @export
 backward_HMM <- function(P,E,V,y,s) {
+  barray <- matrix(0,nrow = 2,ncol = length(y))
   b <- 1+integer(s)
   for(t in rev(1:(length(y)-1))){
     b_old <- b
+    barray[,t+1] <- b_old
     for(i in 1:s){
       b[i] <- 0
       for(j in 1:s){
@@ -19,9 +21,10 @@ backward_HMM <- function(P,E,V,y,s) {
     }
   }
   b_old <- b
-  b <- 0
+  barray[,1] <- b_old
+  p <- 0
   for(j in 1:s){
-    b <- b+v[j]*E[j,y[1]]*b_old[j]
+    p <- p+v[j]*E[j,y[1]]*b_old[j]
   }
-  return(b)
+  return(list(p,barray))
 }
