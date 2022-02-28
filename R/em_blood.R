@@ -1,12 +1,13 @@
-#' Solve logistic regression problem via gradient descent/ascent
+#' Use EM algorithm for ABO blood data
 #'
 #' @param n A 4 by 1 vector of blood type counts. n = (nA,nB,nAB,nO)
 #' @param p A 3 by 1 vector of allele probabilities. p = (pA,pB,pO)
 #' @param tol A non-negative error tolerance
 #'
 #' @export
-em_blood <- function(n,p,tol) {
-err <- Inf
+em_blood <- function(n,p0,tol) {
+  p <- p0
+  err <- Inf
   while(err > tol){
     p_old <- p
 

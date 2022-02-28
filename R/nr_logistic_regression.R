@@ -2,7 +2,7 @@
 #'
 #' @param X A n by d matrix
 #' @param y A n by 1 column vector
-#' @param alpha A non-negative error tolerance
+#' @param tol A non-negative error tolerance
 #'
 #' @export
 nr_logistic_regression <- function(X,y,tol) {

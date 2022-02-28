@@ -57,3 +57,19 @@ gd_beta_CI
 nr_beta
 nr_beta_CI
 ```
+
+```{r EM Blood}
+p <- c(0.1,0.3,0.6) #(pA,pB,pO)
+n <- c(6,55,4,35) #(nA,nB,nAB,nO)
+tol <- 1e-16
+blood_data <- em_blood(n,p,tol)
+blood_data[[1]] #(pA,pB,pO)
+blood_data[[2]] #(pAA,pAO,pBB,pBO,pAB,pOO)
+```
+
+```{r HMM Sim}
+P <- rbind(c(0.98,0.02),c(0.05,0.95))
+E <- rbind(c(1/6,1/6,1/6,1/6,1/6,1/6),
+           c(1/10,1/10,1/2,1/10,1/10,1/10))
+v <- c(1/2,1/2)
+```
