@@ -17,8 +17,8 @@ err <- Inf
     mAB <- n[3]
     mOO <- n[4]
 
-    p <- c((2*mAA+mA+mAB)/(2*sum(n)), (2*mBB+mBO+mAB)/(2*sum(n)), (2*mOO+mAO+mBO)/(2*sum(n)))
-    err <- norm(p-p_old)
+    p <- c((2*mAA+mAO+mAB)/(2*sum(n)), (2*mBB+mBO+mAB)/(2*sum(n)), (2*mOO+mAO+mBO)/(2*sum(n)))
+    err <- norm(p-p_old,type="2")
   }
   p_out <- c(p[1]^2,2*p[1]*p[3],p[2]^2,2*p[2]*p[3],2*p[1]*p[2],p[3]^2)
 
