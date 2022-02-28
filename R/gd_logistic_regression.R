@@ -22,5 +22,5 @@ gd_logistic_regression <- function(X,y,alpha,tol) {
     errors <- c(errors,err)
     count <- count + 1
   }
-  return(list(beta,llhood))
+  return(list(beta,llhood,errors))
 }
