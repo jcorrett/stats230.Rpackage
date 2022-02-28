@@ -7,7 +7,7 @@
 #' @param s dim of hidden state space
 #'
 #' @export
-forward_HMM <- function(P,E,V,y,s) {
+forward_HMM <- function(P,E,v,y,s) {
   aarray <- matrix(0,nrow = 2,ncol = length(y))
   a <- c()
   for(j in 1:s){

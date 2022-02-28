@@ -7,7 +7,7 @@
 #' @param s dim of hidden state space
 #'
 #' @export
-backward_HMM <- function(P,E,V,y,s) {
+backward_HMM <- function(P,E,v,y,s) {
   barray <- matrix(0,nrow = 2,ncol = length(y))
   b <- 1+integer(s)
   for(t in rev(1:(length(y)-1))){

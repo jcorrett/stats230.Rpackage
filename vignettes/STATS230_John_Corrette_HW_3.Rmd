@@ -80,5 +80,13 @@ plot(x)
 plot(y)
 ```
 ```{r Forward/Backward Algorithms}
+f_data <- forward_HMM(P,E,v,y,length(v))
+b_data <- backward_HMM(P,E,v,y,length(v))
+a <- f_data[[2]]
+b <- b_data[[2]]
 
+p_x <- a*b/colSums(a*b,2)
+plot(x-1,col="black")
+lines(p_x[1,],type = "l",col="blue")
+lines(p_x[2,],type = "l",col = "red")
 ```
