@@ -74,4 +74,11 @@ E <- rbind(c(1/6,1/6,1/6,1/6,1/6,1/6),
 v <- c(1/2,1/2)
 
 sim_data <- sim_HMM(P,E,v,100)
+x <- sim_data[[1]]
+y <- sim_data[[2]]
+plot(x)
+plot(y)
+```
+```{r Forward/Backward Algorithms}
+
 ```
