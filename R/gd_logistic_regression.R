@@ -11,7 +11,7 @@ gd_logistic_regression <- function(X,y,alpha,tol) {
   errors <- c()
   d <- dim(X)
   M <- diag(d[2])
-  beta <- rnorm(10)
+  beta <- as.matrix(rnorm(10))
   err <- 1
   count <- 0
   while(err > tol && count < 100000) {
