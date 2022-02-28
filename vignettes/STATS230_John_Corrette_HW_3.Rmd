@@ -35,14 +35,26 @@ X <- X[, xstr]
 X <- scale(X) #standardize to have 0 mean columns w/ var = 1
 alpha <- 1e-3
 tol <- 1e-6
-gd_df <- gd_logistic_regression(X,y,alpha,tol)
-gd_beta <- gd_df[[1]]
-gd_llhood <- gd_df[[2]]
-gd_beta_CI <- gd_df[[3]]
-plot(gd_llhood)
-yhat_gd <- (1/(1+exp(-X%*%gd_beta)))
+
+#gd_df <- gd_logistic_regression(X,y,alpha,tol)
+#gd_beta <- gd_df[[1]]
+#gd_llhood <- gd_df[[2]]
+#gd_beta_CI <- gd_df[[3]]
+
+nr_df <- nr_logistic_regression(X,y,tol)
+nr_beta <- nr_df[[1]]
+nr_llhood <- nr_df[[2]]
+nr_beta_CI <- nr_df[[3]]
+
+#plot(gd_llhood)
+#yhat_gd <- (1/(1+exp(-X%*%gd_beta)))
+
+plot(nr_llhood)
+yhat_nr <- (1/(1+exp(-X%*%nr_beta)))
 
 mylogit <- glm.fit(X,y,family=binomial(),intercept = FALSE)
-gd_beta
-gd_beta_CI
+#gd_beta
+#gd_beta_CI
+nr_beta
+nr_beta_CI
 ```

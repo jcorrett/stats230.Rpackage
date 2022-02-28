@@ -15,7 +15,7 @@ nr_logistic_regression <- function(X,y,tol) {
     llhood <- c(llhood,t(y) %*% X %*% beta -sum(log(1+exp(X%*%beta))))
     gradllhood <- t(X)%*%(1/(1+exp(-X%*%beta)) - y)
     M <- inv(t(X)%*%diag(as.vector(p*(1-p)))%*%X)
-    beta <- beta + M%*%gradllhood
+    beta <- beta - M%*%gradllhood
     p <- 1/(1+exp(-X%*%beta))
     err <- norm(M%*%gradllhood)
   }
