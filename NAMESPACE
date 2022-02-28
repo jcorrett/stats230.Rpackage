@@ -2,5 +2,6 @@
 
 export(OLS_QR)
 export(OLS_SVD)
+export(gd_logistic_regression)
 export(matrixvectormultiply)
 export(rand_MVN)
