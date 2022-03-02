@@ -23,6 +23,8 @@ if (!is_available) {
 library(stats230.Rpackage) 
 ```
 
+## Problem 1
+
 ```{r Read Heart Data, warning=FALSE}
 data <- read.table("http://www-stat.stanford.edu/~tibs/ElemStatLearn/datasets/SAheart.data",
 	sep=",",head=T,row.names=1)
@@ -58,6 +60,8 @@ nr_beta
 nr_beta_CI
 ```
 
+## Problem 2
+
 ```{r EM Blood}
 p <- c(0.1,0.3,0.6) #(pA,pB,pO)
 n <- c(6,55,4,35) #(nA,nB,nAB,nO)
@@ -67,13 +71,16 @@ blood_data[[1]] #(pA,pB,pO)
 blood_data[[2]] #(pAA,pAO,pBB,pBO,pAB,pOO)
 ```
 
+## Problem 3
+
 ```{r HMM Sim}
+set.seed(230)#set "random" seed for curated example
 P <- rbind(c(0.98,0.02),c(0.05,0.95))
 E <- rbind(c(1/6,1/6,1/6,1/6,1/6,1/6),
            c(1/10,1/10,1/2,1/10,1/10,1/10))
 v <- c(1/2,1/2)
 
-sim_data <- sim_HMM(P,E,v,100)
+sim_data <- sim_HMM(P,E,v,400)
 x <- sim_data[[1]]
 y <- sim_data[[2]]
 plot(x)
@@ -89,4 +96,45 @@ p_x <- a*b/colSums(a*b,2)
 plot(x-1,col="black")
 lines(p_x[1,],type = "l",col="blue")
 lines(p_x[2,],type = "l",col = "red")
+```
+```{r Baum-Welch Algorithm}
+eps <- 0.1*runif(2)
+
+P_guess <- rbind(c(1-eps[1],eps[1]),c(eps[2],1-eps[2]))
+E_guess <- matrix(1/6,nrow=2,ncol=6)
+v_guess <- c(0.5,0.5)
+bw_data <- bw_HMM(P_guess,E_guess,v_guess,y,2,6,1e-14)
+P_est <- bw_data[[1]]
+E_est <- bw_data[[2]]
+v_est <- bw_data[[3]]
+P_est
+E_est
+v_est
+```
+```{r Baum-Welch Algorithm}
+eps <- 0.1*runif(2)
+
+P_guess <- rbind(c(1-eps[1],eps[1]),c(eps[2],1-eps[2]))
+E_guess <- matrix(1/6,nrow=2,ncol=6)
+v_guess <- c(0.5,0.5)
+bw_data <- bw_HMM(P_guess,E_guess,v_guess,y,2,6,1e-14)
+P_est <- bw_data[[1]]
+E_est <- bw_data[[2]]
+v_est <- bw_data[[3]]
+P_est
+E_est
+v_est
+```
+
+```{r Baum-Welch Algorithm}
+P_guess <- P
+E_guess <- E
+v_guess <- v
+bw_data <- bw_HMM(P_guess,E_guess,v_guess,y,2,6,1e-14)
+P_est <- bw_data[[1]]
+E_est <- bw_data[[2]]
+v_est <- bw_data[[3]]
+P_est
+E_est
+v_est
 ```
