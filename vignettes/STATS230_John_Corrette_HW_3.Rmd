@@ -42,7 +42,10 @@ X <- X[, xstr]
 X <- scale(X) #standardize to have 0 mean columns w/ var = 1
 ```
 
-With the above data, we then run our models
+With the above data, we then run our models to produce our logistic regression fit, reported as the parameter $\beta$, where $\theta = \beta X$ and
+$$p = \dfrac{1}{1+\exp(-\theta)}$$
+in our regression model. We produce 95% confidence intervals for $\beta$ as follows for each method:
+
 ```{r Analyze Heart Data, warning=FALSE}
 alpha <- 1e-3
 tol <- 1e-10
@@ -65,29 +68,49 @@ print("Gradient Descent Beta 95% CI:")
 gd_results
 print("Newton-Raphson Beta 95% CI:")
 nr_results
+```
 
-plot(gd_llhood)
+From the above, we see nearly identical results, implying that our algorithms are both converging to the same optimal beta values. We also see that all confidence intervals are on the same order of magnitude, which is expected due to our scaling of the data. To verify convergence, we produce plots of the log likelihood as a function of algorithm iterations as follows:
 
-plot(nr_llhood)
+```{r Plot Heart Data, warning=FALSE}
+plot(gd_llhood,type = "b",xlab = "Iteration",ylab = "Log Likelihood",main = "Gradient Descent",xlim = c(1,length(gd_llhood)),ylim = c(-350,-270))
+plot(nr_llhood,type = "b",xlab = "Iteration",ylab = "Log Likelihood",main = "Newton-Raphson",xlim=c(1,length(nr_llhood)),ylim = c(-350,-270))
+```
+
+From the above, we see that both algorithms have the same maximum log likelihood. However, we note that the Newton-Raphson method converges in significantly less iterations than gradient descent. This can be attributed to Newton-Raphson having quadratic convergence, which is not the case for gradient descent. To further see this difference in computational speed, we microbenchmark each algorithm as follows:
+
+```{r Benchmark Heart Data, warning=FALSE}
 lb_GD <- mark(gd_logistic_regression(X,y,alpha,tol),max_iterations = 100,min_time = Inf)
 lb_NR <- mark(nr_logistic_regression(X,y,tol),max_iterations = 100,min_time = Inf)
-p1<-autoplot(lb_GD)+scale_y_continuous(limits=c(1e-2,0.18))+theme(legend.position = "none")+ labs(color = "Legend",title = "Logistic Regression Benchmarking")+theme(plot.title = element_text(hjust = 0.5))
-p2<-autoplot(lb_NR)+theme(legend.position = "none")+scale_y_continuous(limits=c(1e-2,0.18))
+p1<-autoplot(lb_GD)+theme(legend.position = "none")+ labs(color = "Legend",title = "Logistic Regression Benchmarking")+theme(plot.title = element_text(hjust = 0.5))
+p2<-autoplot(lb_NR)+theme(legend.position = "none")
 gridExtra::grid.arrange(p1,p2,nrow=2)
 ```
 
+We can see from the above a near order of magnitude difference in computation time, thus demonstrating the speed up attained by using a quadratically converging algorithm.
+
 ## Problem 2
 
+Next, we are interested in implementing the EM algorithm for the ABO blood type problem. The code for this problem, $\texttt{em_blood}$, can be found on the same github repo as the code for problem 1. For our initial conditions, we use a randomly chosen vector of probabilities $p = (pA,pB,pO)$ and the input sample vector
+$$n = (nA,nB,nAB,nO) = (6,55,4,35).$$
+We expect our code to converge to the probability distribution $p = (0.1,0.3,0.6)$. We run our EM algorithm and print the results as follows:
+
 ```{r EM Blood}
-p <- c(0.1,0.3,0.6) #(pA,pB,pO)
+eps <- runif(2)
+eps <- c(eps[1]*eps[2],(1-eps[1])*eps[2],1-eps[2])
+p <- sample(eps) #(pA,pB,pO)
 n <- c(6,55,4,35) #(nA,nB,nAB,nO)
 tol <- 1e-16
 blood_data <- em_blood(n,p,tol)
 blood_data[[1]] #(pA,pB,pO)
-blood_data[[2]] #(pAA,pAO,pBB,pBO,pAB,pOO)
 ```
+From the above, we see that our algorithm is close to our expected result, with slight discrepancies. If our sample were larger, we would expect our code to converge to the correct solution.
 
 ## Problem 3
+
+For this problem, we consider the occasional dishonest casino hidden Markov model. We wish to implement the Baum-Welch algorithm to estimate the true parameters of this HMM, given as
+$$P = \begin{bmatrix}0.98&0.02\\0.05&0.95\end{bmatrix}, \quad E = \begin{bmatrix}\frac{1}{6}&\frac{1}{6}&\frac{1}{6}&\frac{1}{6}&\frac{1}{6}&\frac{1}{6}\\\frac{1}{10}&\frac{1}{10}&\frac{1}{2}&\frac{1}{10}&\frac{1}{10}&\frac{1}{10}\end{bmatrix},$$
+with the initial distribution $v^T = (\frac{1}{2},\frac{1}{2})$. First, we will simulate a sample hidden and observed state time series with 100 samples, plotted as follows:
 
 ```{r HMM Sim}
 set.seed(1000)#set fixed seed for curated example
@@ -99,9 +122,14 @@ v <- c(1/2,1/2)
 sim_data <- sim_HMM(P,E,v,100)
 x <- sim_data[[1]]
 y <- sim_data[[2]]
-plot(x)
-plot(y)
+plot(x-1,xlab = "t",ylab = "Hidden State",main = "HMM Hidden States")
+plot(y,xlab = "t",ylab = "Observed State",main = "HMM Observed States")
 ```
+
+In the above, the upper state is the loaded die, and the lower state is the fair die. We see that we start with a loaded die, then switch two more times. This is harder to see in the observed states, but we do note higher frequency of 3's in the times were the die is loaded, as expected.
+
+Next, before implementing Baum-Welch, we must first impliment the forward and backward HMM algorithms to compute marginal probabilities. Code for this is in the github repo. We produce a plot of our marginal probabilities overlayed with our hidden states as follows:
+
 ```{r Forward/Backward Algorithms}
 f_data <- forward_HMM(P,E,v,y,length(v))
 b_data <- backward_HMM(P,E,v,y,length(v))
@@ -109,10 +137,15 @@ a <- f_data[[2]]
 b <- b_data[[2]]
 
 p_x <- a*b/colSums(a*b,2)
-plot(x-1,col="black")
+plot(x-1,col="black",xlab = "t",ylab = "Hidden State",main = "HMM Marginal Probabilities")
 lines(p_x[1,],type = "l",col="blue")
 lines(p_x[2,],type = "l",col = "red")
 ```
+
+From the above, we see the blue curve, $P(x_t = \text{Fair}|y)$, begins by alternated when the die is switched. However, in this example, the curves switch when the die is loaded, possibly due to few 3's being rolled between $t \approx 30$ and $t \approx 50$.
+
+Now that the forward/backward HMM algorithms are implemented and producing expected results, we now can implement the Baum-Welch algorithm. Code is given in the function $\texttt{bw_HMM}$ in the github repo. To begin, we chose a random $P$, with minimum probability of $0.9$ on the diagonal as an intial guess that the casino does not change dice too regularly. We also use an initial guess of $E_ij = \frac{1}{6}$ for all $i,j$, which is an assumption that all dice are fair. Lastly, we use the true initial distribution as our initial guess, since it is not unreasonable to assume that all initial hidden states are evenly distributed. With these initial conditions, we produce the following results with the Baum-Welch algorithm:
+
 ```{r Baum-Welch Algorithm 1}
 eps <- 0.1*runif(2)
 
@@ -127,6 +160,9 @@ P_est
 E_est
 v_est
 ```
+
+From the above, we see that our code does a reasonable job at predicting $P$ and $E$, and the predicted $v$ accurately guesses the initial hidden state. However, if we run the algorithm again, we see a different result:
+
 ```{r Baum-Welch Algorithm 2}
 eps <- 0.1*runif(2)
 
@@ -142,6 +178,8 @@ E_est
 v_est
 ```
 
+With the above results, we see that the algorithm converged to a different, incorrect local optima where it predicted the fair die to be more loaded towards rolling a 3. This shows that our algorithm is very sensitive to the initial condition and can easily converge to a local optimum. We can see if this is corrected by using the true values of $P$, $E$, and $v$ as our initial guesses as follows:
+
 ```{r Baum-Welch Algorithm 3}
 P_guess <- P
 E_guess <- E
@@ -154,3 +192,9 @@ P_est
 E_est
 v_est
 ```
+
+From the above results, we see that our algorithm is very close to producing the right answer, verifying that it is our choice of initial condition in the previous two runs that led to a difference in results.
+
+## Appendix - Github Repository Link
+
+As stated throughout the assignment, all code can be found at Github repository for this R package, jcorrett/stats230.Rpackage, can be accessed online [here](https://github.com/jcorrett/stats230.Rpackage).
