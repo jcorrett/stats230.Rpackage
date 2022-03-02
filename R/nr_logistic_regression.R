@@ -18,7 +18,11 @@ nr_logistic_regression <- function(X,y,tol) {
 
     beta <- beta - solve(M,gradllhood)
     p <- 1/(1+exp(-X%*%beta))
-    err <- norm(-solve(M,gradllhood))
+    if(length(llhood)==1){
+      err <- norm(-solve(M,gradllhood))
+    } else {
+      err <- abs(diff(tail(llhood,n=2)))
+    }
   }
   p <- 1/(1+exp(-X%*%beta))
   W <- diag(as.vector(p*(1-p)))

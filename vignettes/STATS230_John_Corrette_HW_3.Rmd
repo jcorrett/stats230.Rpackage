@@ -25,6 +25,10 @@ library(stats230.Rpackage)
 
 ## Problem 1
 
+For this problem, we will analyze heart disease data via logistic regression. To do so, we will use the gradient descent and Newton-Raphson algorithms to fit the logistic regression model to our data set. The functions $\texttt{gd_logistic_regression}$ and $\texttt{nr_logistic_regression}$ that implement these two methods can be found in the github repo for the github package "jcorrett/stats230.Rpackage".
+
+To begin we load our data set. We omit the non-numeric column "famhist" from our data set for simplicity. We also rescale our $X$ data such that each column has mean 0 and variance 1 to avoid scaling-related issues in the logistic regression fit. The code that reads in the data is given as follows:
+
 ```{r Read Heart Data, warning=FALSE}
 data <- read.table("http://www-stat.stanford.edu/~tibs/ElemStatLearn/datasets/SAheart.data",
 	sep=",",head=T,row.names=1)
@@ -36,9 +40,12 @@ xstr <- c("sbp","tobacco","ldl","adiposity","typea","obesity","alcohol","age")
 y <- X[, ystr]
 X <- X[, xstr]
 X <- scale(X) #standardize to have 0 mean columns w/ var = 1
+```
+
+With the above data, we then run our models
+```{r Analyze Heart Data, warning=FALSE}
 alpha <- 1e-3
 tol <- 1e-10
-
 gd_df <- gd_logistic_regression(X,y,alpha,tol)
 gd_beta <- gd_df[[1]]
 gd_llhood <- gd_df[[2]]
@@ -49,15 +56,24 @@ nr_beta <- nr_df[[1]]
 nr_llhood <- nr_df[[2]]
 nr_beta_CI <- nr_df[[3]]
 
+
+gd_results <- cbind(gd_beta-gd_beta_CI,gd_beta+gd_beta_CI)
+nr_results <- cbind(nr_beta-nr_beta_CI,nr_beta+nr_beta_CI)
+rownames(gd_results) <- xstr
+rownames(nr_results) <- xstr
+print("Gradient Descent Beta 95% CI:")
+gd_results
+print("Newton-Raphson Beta 95% CI:")
+nr_results
+
 plot(gd_llhood)
 
 plot(nr_llhood)
-
-mylogit <- glm.fit(X,y,family=binomial(),intercept = FALSE)
-gd_beta
-gd_beta_CI
-nr_beta
-nr_beta_CI
+lb_GD <- mark(gd_logistic_regression(X,y,alpha,tol),max_iterations = 100,min_time = Inf)
+lb_NR <- mark(nr_logistic_regression(X,y,tol),max_iterations = 100,min_time = Inf)
+p1<-autoplot(lb_GD)+scale_y_continuous(limits=c(1e-2,0.18))+theme(legend.position = "none")+ labs(color = "Legend",title = "Logistic Regression Benchmarking")+theme(plot.title = element_text(hjust = 0.5))
+p2<-autoplot(lb_NR)+theme(legend.position = "none")+scale_y_continuous(limits=c(1e-2,0.18))
+gridExtra::grid.arrange(p1,p2,nrow=2)
 ```
 
 ## Problem 2
@@ -74,13 +90,13 @@ blood_data[[2]] #(pAA,pAO,pBB,pBO,pAB,pOO)
 ## Problem 3
 
 ```{r HMM Sim}
-set.seed(230)#set "random" seed for curated example
+set.seed(1000)#set fixed seed for curated example
 P <- rbind(c(0.98,0.02),c(0.05,0.95))
 E <- rbind(c(1/6,1/6,1/6,1/6,1/6,1/6),
            c(1/10,1/10,1/2,1/10,1/10,1/10))
 v <- c(1/2,1/2)
 
-sim_data <- sim_HMM(P,E,v,400)
+sim_data <- sim_HMM(P,E,v,100)
 x <- sim_data[[1]]
 y <- sim_data[[2]]
 plot(x)
@@ -97,7 +113,7 @@ plot(x-1,col="black")
 lines(p_x[1,],type = "l",col="blue")
 lines(p_x[2,],type = "l",col = "red")
 ```
-```{r Baum-Welch Algorithm}
+```{r Baum-Welch Algorithm 1}
 eps <- 0.1*runif(2)
 
 P_guess <- rbind(c(1-eps[1],eps[1]),c(eps[2],1-eps[2]))
@@ -111,7 +127,7 @@ P_est
 E_est
 v_est
 ```
-```{r Baum-Welch Algorithm}
+```{r Baum-Welch Algorithm 2}
 eps <- 0.1*runif(2)
 
 P_guess <- rbind(c(1-eps[1],eps[1]),c(eps[2],1-eps[2]))
@@ -126,7 +142,7 @@ E_est
 v_est
 ```
 
-```{r Baum-Welch Algorithm}
+```{r Baum-Welch Algorithm 3}
 P_guess <- P
 E_guess <- E
 v_guess <- v

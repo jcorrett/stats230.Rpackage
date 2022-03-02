@@ -16,7 +16,11 @@ gd_logistic_regression <- function(X,y,alpha,tol) {
     llhood <- c(llhood,t(y) %*% X %*% beta -sum(log(1+exp(X%*%beta))))
     gradllhood <- t(X)%*%(1/(1+exp(-X%*%beta)) - y)
     beta <- beta - alpha*M%*%gradllhood
-    err <- norm(- alpha*M%*%gradllhood)
+    if(length(llhood)==1){
+      err <- norm(- alpha*M%*%gradllhood)
+    } else {
+      err <- abs(diff(tail(llhood,n=2)))
+    }
   }
   p <- 1/(1+exp(-X%*%beta))
   W <- diag(as.vector(p*(1-p)))
