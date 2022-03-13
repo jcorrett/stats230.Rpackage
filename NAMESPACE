@@ -3,7 +3,7 @@
 export(OLS_QR)
 export(OLS_SVD)
 export(backward_HMM)
-export(betaX2_MH)
+export(beta_MH)
 export(bw_HMM)
 export(em_blood)
 export(forward_HMM)

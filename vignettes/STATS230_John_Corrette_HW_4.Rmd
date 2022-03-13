@@ -23,10 +23,10 @@ library(stats230.Rpackage)
 
 ```{r Monte Carlo E[X^2], warning=FALSE}
 N <- 1000
-x <- rbeta(N,4,2)
-x2 <- x^2
-x2_mean <- mean(x2)
-x2_std_err <- sd(x2)/N
+x_MC <- rbeta(N,4,2)
+x2_MC <- x_MC^2
+x2_mean <- mean(x2_MC)
+x2_std_err <- sd(x2_MC)/N
 sprintf("Monte Carlo 95 percent CI: %g \u00B1 %e", x2_mean, 1.96*x2_std_err)
 ```
 
@@ -36,3 +36,16 @@ $$p_{ij} = q_{ij}a_{ij} = \dfrac{\pi_jq_{ij}q_{ji}}{\pi_jq_{ji}+\pi_iq_{ij}}$$
 $$\sum\limits_j\pi_jp_{ji} = \sum\limits_j \dfrac{\pi_j\pi_iq_{ij}q_{ji}}{\pi_jq_{ji}+\pi_iq_{ij}} = \pi_i\sum\limits_j \dfrac{\pi_jq_{ij}q_{ji}}{\pi_jq_{ji}+\pi_iq_{ij}} = \pi_i\sum\limits_jp_{ij} = \pi_i$$
 
 ## Problem 3
+
+```{r Metropolis Hastings, warning=FALSE}
+N <- 1000
+a <- 4
+b <- 2
+x0 <- mean(x_MC)
+sigma <- 0.2
+
+x_MH <- betaX2_MH(N,a,b,x0,sigma)
+plot(x_MH^2,type = "l")
+hist(x_MH)
+hist(rbeta(N,a,b))
+```

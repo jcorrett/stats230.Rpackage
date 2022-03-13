@@ -1,4 +1,4 @@
-#' Metropolis-Hastings Algorithm For simulating E(X^2) for X~Beta(a,b)
+#' Metropolis-Hastings Algorithm For simulating X~Beta(a,b)
 #'
 #' @param N Number of MCMC steps
 #' @param a Beta distribution parameter 1
@@ -7,7 +7,7 @@
 #' @param sigma Tuning parameter
 #'
 #' @export
-betaX2_MH <- function(N,a,b,x0,sigma) {
+beta_MH <- function(N,a,b,x0,sigma) {
   x <- c()
   xcur <- x0
   for(n in 1:N) {
