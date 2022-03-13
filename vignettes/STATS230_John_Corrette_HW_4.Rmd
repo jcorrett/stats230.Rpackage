@@ -1,0 +1,38 @@
+---
+title: 'STATS230 Homework #4'
+author: "John Corrette"
+date: "3/12/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(bench)
+library(ggplot2)
+library(tidyr)
+library(matlib)
+is_available <- require(stats230.Rpackage)
+if (!is_available) {
+  library(devtools)
+  install_github("jcorrett/stats230.Rpackage")
+}
+library(stats230.Rpackage) 
+```
+
+## Problem 1
+
+```{r Monte Carlo E[X^2], warning=FALSE}
+N <- 1000
+x <- rbeta(N,4,2)
+x2 <- x^2
+x2_mean <- mean(x2)
+x2_std_err <- sd(x2)/N
+sprintf("Monte Carlo 95 percent CI: %g \u00B1 %e", x2_mean, 1.96*x2_std_err)
+```
+
+## Problem 2
+
+$$p_{ij} = q_{ij}a_{ij} = \dfrac{\pi_jq_{ij}q_{ji}}{\pi_jq_{ji}+\pi_iq_{ij}}$$
+$$\sum\limits_j\pi_jp_{ji} = \sum\limits_j \dfrac{\pi_j\pi_iq_{ij}q_{ji}}{\pi_jq_{ji}+\pi_iq_{ij}} = \pi_i\sum\limits_j \dfrac{\pi_jq_{ij}q_{ji}}{\pi_jq_{ji}+\pi_iq_{ij}} = \pi_i\sum\limits_jp_{ij} = \pi_i$$
+
+## Problem 3
