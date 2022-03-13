@@ -1,12 +1,10 @@
 #' Metropolis-Hastings Algorithm For simulating E[X^2] for X~Beta(a,b)
 #'
-#' @param P A transition prob matrix initial guess
-#' @param E An emission probability matrix initial guess
-#' @param v An initial state distribution initial guess
-#' @param y vector of observed states
-#' @param s dim of hidden state space
-#' @param ymax dim of observed state space
-#' @param tol non-negative convergence criteria
+#' @param N Number of MCMC steps
+#' @param a Beta distribution parameter 1
+#' @param b Beta distribution parameter 2
+#' @param x0 Initial guess
+#' @param sigma Tuning parameter
 #'
 #' @export
 betaX2_MH <- function(N,a,b,x0,sigma) {

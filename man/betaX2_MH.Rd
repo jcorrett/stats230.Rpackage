@@ -7,19 +7,15 @@
 betaX2_MH(N, a, b, x0, sigma)
 }
 \arguments{
-\item{P}{A transition prob matrix initial guess}
+\item{N}{Number of MCMC steps}
 
-\item{E}{An emission probability matrix initial guess}
+\item{a}{Beta distribution parameter 1}
 
-\item{v}{An initial state distribution initial guess}
+\item{b}{Beta distribution parameter 2}
 
-\item{y}{vector of observed states}
+\item{x0}{Initial guess}
 
-\item{s}{dim of hidden state space}
-
-\item{ymax}{dim of observed state space}
-
-\item{tol}{non-negative convergence criteria}
+\item{sigma}{Tuning parameter}
 }
 \description{
 Metropolis-Hastings Algorithm For simulating E\link{X^2} for X~Beta(a,b)
