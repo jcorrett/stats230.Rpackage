@@ -12,8 +12,8 @@ betaX2_MH <- function(N,a,b,x0,sigma) {
   xcur <- x0
   for(n in 1:N) {
     xprop <- rlnorm(1,meanlog = log(xcur), sdlog = sigma)
-    aij <- min(1,((xprop^(2*a-1)*(1-xprop)^(2*b-2))/
-                  ((xcur^(2*a-1)*(1-xcur)^(2*b-2)))))
+    aij <- min(1,((xprop^(a)*(1-xprop)^(b-1))/
+                  ((xcur^(a)*(1-xcur)^(b-1)))))
     if(runif(1) <= aij){
       x <- c(x,xprop)
       xcur <- xprop
