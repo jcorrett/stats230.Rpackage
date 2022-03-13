@@ -2,7 +2,7 @@
 % Please edit documentation in R/betaX2_MH.R
 \name{betaX2_MH}
 \alias{betaX2_MH}
-\title{Metropolis-Hastings Algorithm For simulating E\link{X^2} for X~Beta(a,b)}
+\title{Metropolis-Hastings Algorithm For simulating E(X^2) for X~Beta(a,b)}
 \usage{
 betaX2_MH(N, a, b, x0, sigma)
 }
@@ -18,5 +18,5 @@ betaX2_MH(N, a, b, x0, sigma)
 \item{sigma}{Tuning parameter}
 }
 \description{
-Metropolis-Hastings Algorithm For simulating E\link{X^2} for X~Beta(a,b)
+Metropolis-Hastings Algorithm For simulating E(X^2) for X~Beta(a,b)
 }

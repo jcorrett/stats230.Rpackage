@@ -1,4 +1,4 @@
-#' Metropolis-Hastings Algorithm For simulating E[X^2] for X~Beta(a,b)
+#' Metropolis-Hastings Algorithm For simulating E(X^2) for X~Beta(a,b)
 #'
 #' @param N Number of MCMC steps
 #' @param a Beta distribution parameter 1
