@@ -16,36 +16,90 @@ if (!is_available) {
   library(devtools)
   install_github("jcorrett/stats230.Rpackage")
 }
-library(stats230.Rpackage) 
+library(stats230.Rpackage)
+set.seed(0)
 ```
 
 ## Problem 1
 
+To use Monte Carlo to simulate $E[X^2]$ for $X\sim$Beta$(4,2)$, we randomly draw 1000 realizations from this distribution, then compute the average value of $x^2$ and the monte carlo error as follows, reporting the error and 95% confidence interval:
+
 ```{r Monte Carlo E[X^2], warning=FALSE}
-N <- 1000
-x_MC <- rbeta(N,4,2)
-x2_MC <- x_MC^2
-x2_mean <- mean(x2_MC)
-x2_std_err <- sd(x2_MC)/N
-sprintf("Monte Carlo 95 percent CI: %g \u00B1 %e", x2_mean, 1.96*x2_std_err)
-```
-
-## Problem 2
-
-$$p_{ij} = q_{ij}a_{ij} = \dfrac{\pi_jq_{ij}q_{ji}}{\pi_jq_{ji}+\pi_iq_{ij}}$$
-$$\sum\limits_j\pi_jp_{ji} = \sum\limits_j \dfrac{\pi_j\pi_iq_{ij}q_{ji}}{\pi_jq_{ji}+\pi_iq_{ij}} = \pi_i\sum\limits_j \dfrac{\pi_jq_{ij}q_{ji}}{\pi_jq_{ji}+\pi_iq_{ij}} = \pi_i\sum\limits_jp_{ij} = \pi_i$$
-
-## Problem 3
-
-```{r Metropolis Hastings, warning=FALSE}
 N <- 1000
 a <- 4
 b <- 2
-x0 <- mean(x_MC)
-sigma <- 0.2
-
-x_MH <- betaX2_MH(N,a,b,x0,sigma)
-plot(x_MH^2,type = "l")
-hist(x_MH)
-hist(rbeta(N,a,b))
+x_MC <- rbeta(N,a,b)
+x2_MC <- x_MC^2
+x2_mean <- mean(x2_MC)
+x2_std_err <- sd(x2_MC)/N
+sprintf("Monte Carlo Error: %e",x2_std_err)
 ```
+```{r MC E[X^2] Print,warning=FALSE,echo=FALSE}
+sprintf("Monte Carlo 95%% CI: %g \u00B1 %e", x2_mean, 1.96*x2_std_err)
+```
+
+From the above, we see that our estimate has a fairly tight confidence interval. The exact second moment is given to be as follows:
+
+```{r Exact E[X^2], warning=FALSE}
+sprintf("Exact Beta Second Moment: %g",(a*(a+1))/((a+b+1)*(a+b)))
+```
+While our estimate does not correctly capture the correct value, we can see that it is on the correct track and would approximate better with a higher choice of $N$.
+
+## Problem 2
+
+To transition from state $i$ to $j$, one would need to randomly decide to chose state $j$ and randomly accept this transition, hence, we know that
+$$p_{ij} = q_{ij}a_{ij} = \dfrac{\pi_jq_{ij}q_{ji}}{\pi_jq_{ji}+\pi_iq_{ij}}$$
+where $q_{ij}$ is the proposal probability of state $j$ given state $i$, and $a_{ij}$ is the acceptance probability.
+
+Next, to show that $\boldsymbol{\pi}$ is a stationary distribution of Barker's Markov chain and to verify our previous derivation, we will show that
+$$\boldsymbol{\pi} = P\boldsymbol{\pi},$$
+where $P$ is our transition matrix with entries $p_{ij}$ as defined above. If we consider the $i$th element of $P\boldsymbol{\pi}$, which is given to be
+$$\sum\limits_j\pi_jp_{ji},$$
+we have the result that
+$$\sum\limits_j\pi_jp_{ji} = \sum\limits_j \dfrac{\pi_j\pi_iq_{ij}q_{ji}}{\pi_jq_{ji}+\pi_iq_{ij}} = \pi_i\sum\limits_j \dfrac{\pi_jq_{ij}q_{ji}}{\pi_jq_{ji}+\pi_iq_{ij}} = \pi_i\sum\limits_jp_{ij} = \pi_i.$$
+Therefore, since $\sum\limits_j\pi_jp_{ji} = \pi_i$, it must be true that $\boldsymbol{\pi} = P\boldsymbol{\pi},$ and thus we have demonstrated that our derivation of $p_{ij}$ is correct and that $\boldsymbol{\pi}$ is a stationary distribution of Barker's Markov Chain.
+
+## Problem 3
+
+To compute our proposal density, we can show that
+$$\log x^{prop} = \log\left(x^{cur}e^X\right) = \log x^{cur}+\log e^X = \log x^{cur} + X.$$
+Then, since $X\sim\mathcal{N}(0,\sigma^2)$, it must be true that $\log x^{prop}\sim\mathcal{N}(\log x^{cur},\sigma^2)$, hence $x^{prop}$ is log normally distributed with proposal density
+$$g(x|x^{cur}) = \dfrac{1}{x\sigma\sqrt{2\pi}}e^{-\frac{(\log x -\log x^{cur})^2}{2\sigma^2}}.$$
+Given the above proposal density, our Metropolis-Hastings ratio is defined to be
+$$\begin{align*}
+a &= \min\left(1,\dfrac{\pi(x^{prop})g(x^{cur}|x^{prop})}{\pi(x^{cur})g(x^{prop}|x^{cur})}\right)\\
+&= \min\left(1,\dfrac{(x^{prop})^{\alpha-1}(1-x^{prop})^{\beta-1}(x^{prop})}{(x^{cur})^{\alpha-1}(1-x^{cur})^{\beta-1}(x^{cur})}e^{\frac{-(\log x^{prop} -\log x^{cur})^2+(\log x^{cur} -\log x^{prop})^2}{2\sigma^2}}\right)\\
+&= \min\left(1,\dfrac{(x^{prop})^{\alpha}(1-x^{prop})^{\beta-1}}{(x^{cur})^{\alpha}(1-x^{cur})^{\beta-1}}\right),
+\end{align*}$$
+where we can ignore our normalizing constants from $\pi(x)$, our beta density, and $g(x|y)$ since in the Metropolis-Hastings ratio these constants cancel.
+
+Next, we simulate 1000 realizations from Metropolis-Hastings as follows, computing $E[X^2]$ as in problem 1. All code is given in the github repository found [here](https://github.com/jcorrett/stats230.Rpackage). 
+
+```{r Metropolis-Hastings, warning=FALSE}
+N <- 1000
+a <- 4
+b <- 2
+x0 <- 0.0001
+sigma <- 0.1
+MC_burn = 1000
+
+x_MH <- beta_MH(N+MC_burn,a,b,x0,sigma)
+x_MH <- x_MH[-(1:MC_burn)]
+sprintf("Metropolis-Hastings E[X^2] after MCMC burn in: %g",mean(x_MH^2))
+```
+
+From the above, we can see much better agreement with the true value of $E[X^2]$. To verify our MCMC results, we plot the following trace plot and histogram, where we overlay the MCMC histogram in blue with our Monte Carlo method results in red, along with the true beta pdf function.
+
+```{r Plot Metropolis-Hastings Results,warning=FALSE}
+plot(x_MH^2,type = "l",main = "Metropolis-Hastings E[X^2] Trace Plot")
+```
+```{r Plot MH Histograms, warning=FALSE, echo=FALSE}
+p1 <- hist(x_MH,20,xlim=c(0,1),plot = FALSE);
+p2 <- hist(x_MC,20,xlim=c(0,1),plot = FALSE);
+plot( p1, col=rgb(0,0,1,1/4), xlim=c(0,1),main = "Approximations of Beta(4,2)") 
+plot( p2, col=rgb(1,0,0,1/4), xlim=c(0,1), add=T)
+xlines <-seq(min(p2$breaks),max(p2$breaks),length.out=100) #seq of x for pdf
+lines(x = xlines,y=dbeta(xlines,a,b)*N*diff(p2$breaks)[1])
+```
+
+From the above, we can see the noisy behavior we expect to see in an MCMC trace plot. We also can see that both the MCMC and Monte Carlo results well approximate the target beta distribution, as expected, thus giving us confidence in our estimates of $E[X^2]$ and the methods used to compute them. 
